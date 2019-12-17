@@ -14,7 +14,7 @@
             <h1>Service Status</h1>
         </div>
         <div class="row">
-            <table class="table table-bordered" id="queries">
+            <table class="table table-bordered" id="trains">
                 <thead>
                     <tr>
                         <th>Train</th>
@@ -22,7 +22,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {{ range .Train}}
+                    {{ range .Trains}}
                     <tr>
                         <td>{{ .Train }} 
                         </td>
