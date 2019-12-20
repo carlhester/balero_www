@@ -14,7 +14,21 @@
             <h1>Service Status</h1>
         </div>
         <div class="row">
-            <table class="table table-bordered" id="trains">
+            <form action="/update" method="get">
+                <div class="form-group">
+                    <label for="select1">Station</label>
+                        <select class="form-control" id="station" name="station" autocomplete="off">
+                            <option selected disabled hidden>Select Station</option>
+                            {{ range .Stations }}
+                          <option>{{ .Name }} </option>
+                            {{ end }}
+                        </select>
+                </div>
+                <input type="submit">
+            </form>
+        </div>
+        <div class="row">
+            <table class="table table-bordered" id="trains" >
                 <thead>
                     <tr>
                         <th>Train</th>
