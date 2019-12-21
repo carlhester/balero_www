@@ -51,7 +51,9 @@ type AStation struct {
 
 // fetch the data from the api
 func fetchTrains(station string) []ATrain {
+	start := time.Now()
 	log.Printf("[fetchTrains] START. Passed %s", station)
+
 	var fetchedTrains = []ATrain{}
 	url := "http://api.bart.gov/api/etd.aspx?cmd=etd&orig=" + station + "&key=MW9S-E7SL-26DU-VV8V&dir=n&json=y"
 	log.Printf("[fetchTrains] URL: %s", url)
@@ -77,7 +79,7 @@ func fetchTrains(station string) []ATrain {
 		}
 	}
 	log.Printf("[fetchTrains] returning %d entries", len(fetchedTrains))
-	log.Printf("[fetchTrains] END\n\n")
+	log.Printf("[fetchTrains] END: %s\n\n", time.Since(start))
 	return fetchedTrains
 }
 
@@ -118,7 +120,8 @@ func updateUI(rw http.ResponseWriter, r *http.Request) {
 	log.Printf("[updateUI] %+v", r)
 	rw.Header().Set("Cache-Control", "no-store")
 	selectedStation = fetchSelectedStation(r)
-	http.Redirect(rw, r, "http://127.0.0.1:8080", 301) // Send browser back to main page
+	log.Printf("[updateUI] %+v", r.Host)
+	http.Redirect(rw, r, "http://"+r.Host, 301) // Send browser back to main page
 	log.Printf("[updateUI] END: %s\n\n", time.Since(start))
 }
 
@@ -135,7 +138,7 @@ func serveUI(rw http.ResponseWriter, r *http.Request) {
 
 	tmpl, err := template.ParseFiles("templates/index.html")
 	page := PageData{
-		Trains:   trains,
+		Trains:   (trains),
 		Stations: stations,
 	}
 	if err = tmpl.Execute(rw, page); err != nil {

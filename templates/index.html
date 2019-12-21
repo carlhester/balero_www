@@ -11,7 +11,7 @@
 <body>
     <div class="container">
         <div class="row">
-            <h1>Service Status</h1>
+            <h1>Trains</h1>
         </div>
         <div class="row">
             <form action="/update" method="get">
@@ -38,9 +38,8 @@
                 <tbody>
                     {{ range .Trains}}
                     <tr>
-                        <td>{{ .Train }} 
-                        </td>
                         <td>{{ .Minutes }}</td>
+                        <td>{{ .Train }} </td>
                     </tr>
                     {{ end }}
                 </tbody>
@@ -55,7 +54,9 @@
     <script>
         $(document).ready(function()
         {
-            $('#trains').DataTable();
+            $('#trains').DataTable({
+                paging: false
+            });
         });
     </script>
 </body>
