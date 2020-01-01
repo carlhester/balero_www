@@ -7,7 +7,6 @@ import "net/http"
 import "io/ioutil"
 import "sort"
 import "strconv"
-import "balero_www/json2struct"
 
 // trains is a slice of ATrain objects
 var trains = []ATrain{}
@@ -32,6 +31,7 @@ func convertStrToInt(input string) int {
 	if input == "Leaving" {
 		input = "0"
 	}
+
 	i, err := strconv.Atoi(input)
 	if err != nil {
 		log.Panic(err.Error())
@@ -70,7 +70,7 @@ func fetchTrains(station string) []ATrain {
 		log.Panic(err)
 	}
 
-	usableData := json2struct.RawDataIntoDataStruct(trainData)
+	usableData := RawDataIntoDataStruct(trainData)
 
 	for _, train := range usableData.Root.Station[0].Etd {
 		for _, est := range train.Est {
@@ -120,7 +120,6 @@ func updateUI(rw http.ResponseWriter, r *http.Request) {
 	log.Printf("[updateUI] %+v", r)
 	rw.Header().Set("Cache-Control", "no-store")
 	selectedStation = fetchSelectedStation(r)
-	log.Printf("[updateUI] %+v", r.Host)
 	http.Redirect(rw, r, "http://"+r.Host, 301) // Send browser back to main page
 	log.Printf("[updateUI] END: %s\n\n", time.Since(start))
 }
@@ -136,7 +135,7 @@ func serveUI(rw http.ResponseWriter, r *http.Request) {
 	trains = fetchTrains(selectedStation)
 	trains = sortSlice(trains)
 
-	tmpl, err := template.ParseFiles("templates/index.html")
+	tmpl, err := template.ParseFiles("ui/html/index.html")
 	page := PageData{
 		Trains:   (trains),
 		Stations: stations,
