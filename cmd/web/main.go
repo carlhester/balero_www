@@ -7,6 +7,7 @@ import "net/http"
 import "io/ioutil"
 import "sort"
 import "strconv"
+import "balero/balero_www/pkg/api"
 
 // trains is a slice of ATrain objects
 var trains = []ATrain{}
@@ -70,7 +71,7 @@ func fetchTrains(station string) []ATrain {
 		log.Panic(err)
 	}
 
-	usableData := RawDataIntoDataStruct(trainData)
+	usableData := api.RawDataIntoDataStruct(trainData)
 
 	for _, train := range usableData.Root.Station[0].Etd {
 		for _, est := range train.Est {
@@ -117,7 +118,7 @@ func fetchSelectedStation(r *http.Request) string {
 func updateUI(rw http.ResponseWriter, r *http.Request) {
 	start := time.Now()
 	log.Printf("[updateUI] START")
-	log.Printf("[updateUI] %+v", r)
+	//log.Printf("[updateUI] %+v", r)
 	rw.Header().Set("Cache-Control", "no-store")
 	selectedStation = fetchSelectedStation(r)
 	http.Redirect(rw, r, "http://"+r.Host, 301) // Send browser back to main page
@@ -127,7 +128,7 @@ func updateUI(rw http.ResponseWriter, r *http.Request) {
 func serveUI(rw http.ResponseWriter, r *http.Request) {
 	start := time.Now()
 	log.Printf("[serveUI] START")
-	log.Printf("[serveUI] %+v", r)
+	//log.Printf("[serveUI] %+v", r)
 	log.Printf("[serveUI] selected station : %s", selectedStation)
 	rw.Header().Set("Cache-Control", "no-store")
 
@@ -143,7 +144,7 @@ func serveUI(rw http.ResponseWriter, r *http.Request) {
 	if err = tmpl.Execute(rw, page); err != nil {
 		log.Panic("Failed to write template", err)
 	}
-	log.Printf("[serveUI] %+v", rw)
+	//log.Printf("[serveUI] %+v", rw)
 	log.Printf("[serveUI] END: %s\n\n", time.Since(start))
 }
 func sortSlice(train []ATrain) []ATrain {
